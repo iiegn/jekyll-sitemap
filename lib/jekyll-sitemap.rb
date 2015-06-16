@@ -15,7 +15,13 @@ module Jekyll
     def generate(site)
       @site = site
       @site.config["time"]         = Time.new
-      @site.config["html_files"]   = html_files.map(&:to_liquid)
+      begin
+          exts = @site.config["sitemap"]["extensions"]
+      rescue NameError
+          # safe default - and backward-compatible behaviour
+          exts = [".html", ".htm", ".xhtml"]
+      end
+      @site.config["sitemap_static_files"]  = sitemap_static_files(exts).map(&:to_liquid)
       unless sitemap_exists?
         write
         @site.keep_files ||= []
@@ -23,15 +29,9 @@ module Jekyll
       end
     end
 
-    HTML_EXTENSIONS = %W(
-      .html
-      .xhtml
-      .htm
-    )
-
-    # Array of all non-jekyll site files with an HTML extension
-    def html_files
-      @site.static_files.select { |file| HTML_EXTENSIONS.include? file.extname }
+    # Array of all non-jekyll site files with given extensions
+    def sitemap_static_files (exts=[])
+      @site.static_files.select { |file| exts.include? file.extname() }
     end
 
     # Path to sitemap.xml template file
