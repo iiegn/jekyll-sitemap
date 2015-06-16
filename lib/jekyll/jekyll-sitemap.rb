@@ -8,6 +8,7 @@ module Jekyll
     # Main plugin action, called by Jekyll-core
     def generate(site)
       @site = site
+      @user_file_extensions = @site.config["sitemap"]["extensions"]
       unless sitemap_exists?
         write
         @site.keep_files ||= []
@@ -24,7 +25,8 @@ module Jekyll
 
     # Array of all non-jekyll site files with an HTML extension
     def static_files
-      @site.static_files.select { |file| INCLUDED_EXTENSIONS.include? file.extname }
+      file_extensions = (INCLUDED_EXTENSIONS + @user_file_extensions).to_set
+      @site.static_files.select { |file| file_extensions.include? file.extname }
     end
 
     # Path to sitemap.xml template file

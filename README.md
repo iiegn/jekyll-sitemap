@@ -12,6 +12,12 @@
 ```yml
 gems:
   - jekyll-sitemap
+
+# optionally, to include more static files
+
+sitemap:
+  extensions:
+    - .ps
 ```
 
 If all gem plugins have the same `priority`, they will be executed in the

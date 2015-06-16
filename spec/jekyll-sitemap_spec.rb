@@ -97,6 +97,10 @@ describe(Jekyll::JekyllSitemap) do
     expect(contents).to match %r!/static_files/test.pdf!
   end
 
+  it "does include assets with file_extensions into sitemap.xml" do
+    expect(contents).to match /<loc>http:\/\/example\.org\/assets\/bar\.ps<\/loc>/
+  end
+
   it "does not include posts that have set 'sitemap: false'" do
     expect(contents).not_to match /\/exclude-this-post\.html<\/loc>/
   end
@@ -110,7 +114,7 @@ describe(Jekyll::JekyllSitemap) do
   end
 
   it "includes the correct number of items" do
-    expect(contents.scan(/(?=<url>)/).count).to eql 19
+    expect(contents.scan(/(?=<url>)/).count).to eql 20
   end
 
   context "with a baseurl" do
